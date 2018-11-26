@@ -1,11 +1,3 @@
-inline void generate_checksum (uchar checksum[5], const uchar pubkey[32]) {
-	// For some reason, this doesn't work when put in generate_pubkey.
-	blake2b_state state;
-	blake2b_init (&state, 5);
-	blake2b_update (&state, (__private uchar *) pubkey, 32);
-	blake2b_final (&state, (__private uchar *) checksum, 5);
-}
-
 __kernel void generate_pubkey (__global uchar *result, __global uchar *key_root, __global uchar *pub_req, __global uchar *pub_mask, uchar prefix_len, uchar generate_key_type, __global uchar *public_offset) {
 	int const thread = get_global_id (0);
 	uchar key_material[32];
@@ -66,7 +58,12 @@ __kernel void generate_pubkey (__global uchar *result, __global uchar *key_root,
 	}
 	if (prefix_len > 32) {
 		uchar checksum[5];
-		generate_checksum (checksum, pubkey);
+
+		blake2b_state checksum_state;
+		blake2b_init (&checksum_state, 5);
+		blake2b_update (&checksum_state, (__private uchar *) pubkey, 32);
+		blake2b_final (&checksum_state, (__private uchar *) checksum, 5);
+
 		for (uchar i = 32; i < prefix_len; i++) {
 			if ((checksum[4 - (i - 32)] & pub_mask[i]) != pub_req[i]) {
 				return;
