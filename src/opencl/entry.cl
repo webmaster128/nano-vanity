@@ -59,9 +59,12 @@ __kernel void generate_pubkey (__global uchar *result, __global uchar *key_root,
 	if (pubkey_prefix_len > 32) {
 		pubkey_prefix_len = 32;
 	}
+
+	bool valid = true;
+
 	for (uchar i = 0; i < pubkey_prefix_len; i++) {
 		if ((pubkey[i] & pub_mask[i]) != pub_req[i]) {
-			return;
+			valid = false;
 		}
 	}
 	if (prefix_len > 32) {
@@ -69,11 +72,14 @@ __kernel void generate_pubkey (__global uchar *result, __global uchar *key_root,
 		generate_checksum (checksum, pubkey);
 		for (uchar i = 32; i < prefix_len; i++) {
 			if ((checksum[4 - (i - 32)] & pub_mask[i]) != pub_req[i]) {
-				return;
+				valid = false;
 			}
 		}
 	}
-	for (uchar i = 0; i < 32; i++) {
-		result[i] = key_material[i];
+
+	if (valid) {
+		for (uchar i = 0; i < 32; i++) {
+			result[i] = key_material[i];
+		}
 	}
 }
