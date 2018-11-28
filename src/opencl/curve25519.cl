@@ -1428,22 +1428,29 @@ ge25519_unpack_vartime(ge25519 *r, const unsigned char p[32]) {
 	curve25519_mul(t, t, den);
 	curve25519_sub_reduce(root, t, num);
 	curve25519_contract(check, root);
+
+	int out = -1; // -1 means unset
 	if (!ed25519_verify(check, zero, 32)) {
 		curve25519_add_reduce(t, t, num);
 		curve25519_contract(check, t);
-		if (!ed25519_verify(check, zero, 32))
-			return 0;
-		curve25519_mul_const(r->x, r->x, ge25519_sqrtneg1);
+		if (!ed25519_verify(check, zero, 32)) {
+			out = 0;
+		} else {
+			curve25519_mul_const(r->x, r->x, ge25519_sqrtneg1);
+		}
 	}
 
-	curve25519_contract(check, r->x);
-	// Inverted from ge25519_unpack_negative_vartime
-	if ((check[0] & 1) != parity) {
-		curve25519_copy(t, r->x);
-		curve25519_neg(r->x, t);
+	if (out == -1) {
+		curve25519_contract(check, r->x);
+		// Inverted from ge25519_unpack_negative_vartime
+		if ((check[0] & 1) != parity) {
+			curve25519_copy(t, r->x);
+			curve25519_neg(r->x, t);
+		}
+		curve25519_mul(r->t, r->x, r->y);
+		out = 1;
 	}
-	curve25519_mul(r->t, r->x, r->y);
-	return 1;
+	return out;
 }
 
 
