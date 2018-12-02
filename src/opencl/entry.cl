@@ -23,12 +23,20 @@ __kernel void generate_pubkey(
 	ulong max_address_value,
 	uchar generate_key_type
 ) {
-	int const thread = get_global_id (0);
 	uchar key_material[32];
 	for (size_t i = 0; i < 32; i++) {
 		key_material[i] = key_root[i];
 	}
-	*((size_t *) key_material) += thread;
+
+	const uint64_t thread_id = get_global_id(0);
+	key_material[24] ^= (thread_id >> (7*8)) & 0xFF;
+	key_material[25] ^= (thread_id >> (6*8)) & 0xFF;
+	key_material[26] ^= (thread_id >> (5*8)) & 0xFF;
+	key_material[27] ^= (thread_id >> (4*8)) & 0xFF;
+	key_material[28] ^= (thread_id >> (3*8)) & 0xFF;
+	key_material[29] ^= (thread_id >> (2*8)) & 0xFF;
+	key_material[30] ^= (thread_id >> (1*8)) & 0xFF;
+	key_material[31] ^= (thread_id >> (0*8)) & 0xFF;
 
 	uchar menomic_hash[32];
 	uchar *key;
