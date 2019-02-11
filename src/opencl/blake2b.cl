@@ -273,15 +273,15 @@ static void ucharcpy (uchar * dst, uchar const * src, size_t count)
 	}
 }
 
-void printstate (blake2b_state * S)
-{
-	printf ("%lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu ", S->h[0], S->h[1], S->h[2], S->h[3], S->h[4], S->h[5], S->h[6], S->h[7], S->t[0], S->t[1], S->f[0], S->f[1]);
-	for (int i = 0; i < 128; ++i)
-	{
-		printf ("%02x", S->buf[i]);
-	}
-	printf (" %lu %02x\n", S->buflen, S->last_node);
-}
+// void printstate (blake2b_state * S)
+// {
+// 	printf ("%lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu %lu ", S->h[0], S->h[1], S->h[2], S->h[3], S->h[4], S->h[5], S->h[6], S->h[7], S->t[0], S->t[1], S->f[0], S->f[1]);
+// 	for (int i = 0; i < 128; ++i)
+// 	{
+// 		printf ("%02x", S->buf[i]);
+// 	}
+// 	printf (" %lu %02x\n", S->buflen, S->last_node);
+// }
 
 /* inlen now in bytes */
 static int blake2b_update( blake2b_state *S, const uchar *in, ulong inlen )
