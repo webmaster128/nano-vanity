@@ -58,15 +58,16 @@ __constant static uchar blake2b_sigma[12][16] =
   { 14, 10,  4,  8,  9, 15, 13,  6,  1, 12,  0,  2, 11,  7,  5,  3 }
 };
 
-
-static inline int blake2b_set_lastnode( blake2b_state *S )
+CUSTOM_INLINE
+int blake2b_set_lastnode( blake2b_state *S )
 {
   S->f[1] = ~0UL;
   return 0;
 }
 
 /* Some helper functions, not necessarily useful */
-static inline int blake2b_set_lastblock( blake2b_state *S )
+CUSTOM_INLINE
+int blake2b_set_lastblock( blake2b_state *S )
 {
   if( S->last_node ) blake2b_set_lastnode( S );
 
@@ -74,14 +75,16 @@ static inline int blake2b_set_lastblock( blake2b_state *S )
   return 0;
 }
 
-static inline int blake2b_increment_counter( blake2b_state *S, const ulong inc )
+CUSTOM_INLINE
+int blake2b_increment_counter( blake2b_state *S, const ulong inc )
 {
   S->t[0] += inc;
   S->t[1] += ( S->t[0] < inc );
   return 0;
 }
 
-static inline uint load32( const void *src )
+CUSTOM_INLINE
+uint load32( const void *src )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   return *( uint * )( src );
@@ -95,7 +98,8 @@ static inline uint load32( const void *src )
 #endif
 }
 
-static inline ulong load64( const void *src )
+CUSTOM_INLINE
+ulong load64( const void *src )
 {
 #if defined(NATIVE_LITTLE_ENDIAN)
   return *( ulong * )( src );
@@ -113,7 +117,8 @@ static inline ulong load64( const void *src )
 #endif
 }
 
-static inline void store32( void *dst, uint w )
+CUSTOM_INLINE
+void store32( void *dst, uint w )
 {
 #if defined(__ENDIAN_LITTLE__)
   *( uint * )( dst ) = w;
@@ -126,7 +131,8 @@ static inline void store32( void *dst, uint w )
 #endif
 }
 
-static inline void store64( void *dst, ulong w )
+CUSTOM_INLINE
+void store64( void *dst, ulong w )
 {
 #if defined(__ENDIAN_LITTLE__)
   *( ulong * )( dst ) = w;
@@ -143,7 +149,8 @@ static inline void store64( void *dst, ulong w )
 #endif
 }
 
-static inline ulong rotr64( const ulong w, const unsigned c )
+CUSTOM_INLINE
+ulong rotr64( const ulong w, const unsigned c )
 {
   return ( w >> c ) | ( w << ( 64 - c ) );
 }
@@ -158,7 +165,8 @@ static void ucharset (void * dest_a, int val, size_t count)
 }
 
 /* init xors IV with input parameter block */
-static inline int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
+CUSTOM_INLINE
+int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
 {
   uchar *p, *h;
   __constant uchar *v;
@@ -173,7 +181,8 @@ static inline int blake2b_init_param( blake2b_state *S, const blake2b_param *P )
   return 0;
 }
 
-static inline int blake2b_init( blake2b_state *S, const uchar outlen )
+CUSTOM_INLINE
+int blake2b_init( blake2b_state *S, const uchar outlen )
 {
   blake2b_param P[1];
 

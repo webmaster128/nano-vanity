@@ -1,4 +1,5 @@
-inline void generate_checksum (uchar checksum[5], const uchar pubkey[32]) {
+CUSTOM_INLINE
+void generate_checksum (uchar checksum[5], const uchar pubkey[32]) {
 	// For some reason, this doesn't work when put in generate_pubkey.
 	blake2b_state state;
 	blake2b_init (&state, 5);

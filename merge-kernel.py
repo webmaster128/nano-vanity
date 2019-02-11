@@ -10,6 +10,7 @@
 import sys
 
 files = [
+    "types.cl",
     "blake2b.cl",
     "curve25519-constants.cl",
     "curve25519-constants2.cl",
